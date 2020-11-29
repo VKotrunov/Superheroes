@@ -24,5 +24,33 @@ namespace Superheroes
         {
             InitializeComponent();
         }
+
+        private void aceptarButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void limpiarButton_Click(object sender, RoutedEventArgs e)
+        {
+            nombreTextBox.Text = "";
+            rutaImagenTextBox.Text = "";
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            bool esHeroe = (sender as RadioButton).Tag.Equals("heroe");
+            if (esHeroe)
+            {
+                vengadoresCheckBox.IsEnabled = true;
+                xmenCheckBox.IsEnabled = true;
+                villanoRadioButton.IsChecked = false;
+            }
+            else
+            {
+                vengadoresCheckBox.IsEnabled = false;
+                xmenCheckBox.IsEnabled = false;
+                heroeRadioButton.IsChecked = false;
+            }
+        }
     }
 }
