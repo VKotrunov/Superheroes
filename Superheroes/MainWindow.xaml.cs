@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace Superheroes
 {
@@ -20,36 +11,66 @@ namespace Superheroes
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Superheroe superheroe;
+        private List<Superheroe> superheroes;
         public MainWindow()
         {
             InitializeComponent();
+            superheroes = Superheroe.GetSamples();
+            contenedorSuperheroe.DataContext = superheroes;
+            actualTextBlock.Text = "1";
+            totalTextBlock.Text = superheroes.Count.ToString();
+            superheroe = new Superheroe();
+            contenedorNuevoSuperheroe.DataContext = superheroe;
         }
 
         private void aceptarButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            superheroe.Nombre = nombreTextBox.Text;
+            superheroe.Imagen = rutaImagenTextBox.Text;
+            if ((bool)villanoRadioButton.IsChecked)
+            {
+                superheroe.Vengador = false;
+                superheroe.Xmen = false;
+                superheroe.Heroe = false;
+            }
+            else 
+            {
+                superheroe.Vengador = (bool)vengadoresCheckBox.IsChecked;
+                superheroe.Xmen = (bool)xmenCheckBox.IsChecked;
+                superheroe.Heroe = true;
+                superheroe.Villano = false;
+            }
+            superheroes.Add(superheroe);
+            MessageBox.Show("Superhéroe insertado con exito", "Superhéroes", MessageBoxButton.OK, MessageBoxImage.Information);
+            totalTextBlock.Text = superheroes.Count.ToString();
+            superheroe = new Superheroe();
+            contenedorNuevoSuperheroe.DataContext = superheroe;
         }
 
         private void limpiarButton_Click(object sender, RoutedEventArgs e)
         {
-            nombreTextBox.Text = "";
-            rutaImagenTextBox.Text = "";
+            superheroe = new Superheroe();
+            contenedorNuevoSuperheroe.DataContext = superheroe;
         }
 
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        private void anteriorImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            bool esHeroe = (sender as RadioButton).Tag.Equals("heroe");
-            if (esHeroe)
+            int actual = int.Parse(actualTextBlock.Text);
+            if (actual > 1)
             {
-                vengadoresCheckBox.IsEnabled = true;
-                xmenCheckBox.IsEnabled = true;
-                villanoRadioButton.IsChecked = false;
+                contenedorSuperheroe.DataContext = superheroes[actual - 2];
+                actualTextBlock.Text = (actual - 1).ToString();
             }
-            else
+        }
+
+        private void siguiente_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            int actual = int.Parse(actualTextBlock.Text);
+            if (actual < superheroes.Count)
             {
-                vengadoresCheckBox.IsEnabled = false;
-                xmenCheckBox.IsEnabled = false;
-                heroeRadioButton.IsChecked = false;
+                contenedorSuperheroe.DataContext = superheroes[actual];
+                actualTextBlock.Text = (actual + 1).ToString();
             }
         }
     }

@@ -61,6 +61,27 @@
             <Setter Property="Margin"
                     Value="5,0,0,0" />
         </Style>
+
+        <Style x:Key="flecha"
+               TargetType="Image">
+            <Setter Property="Source"
+                    Value="arrow.png" />
+            <Setter Property="Width"
+                    Value="25" />
+        </Style>
+
+        <Style x:Key="iconos"
+               TargetType="Image">
+            <Setter Property="Height"
+                    Value="50" />
+            <Setter Property="DockPanel.Dock"
+                    Value="Right" />
+            <Setter Property="Margin"
+                    Value="5,5,10,5" />
+        </Style>
+
+        <local:BackgroundColorConverter x:Key="conversorColor"></local:BackgroundColorConverter>
+        <local:VisibilityConverter x:Key="conversorVisibilidad"></local:VisibilityConverter>
     </Window.Resources>
     
     <TabControl Margin="10">
@@ -68,28 +89,46 @@
             <TabItem.Header>
                 Ver superhéroes
             </TabItem.Header>
-            <DockPanel Background="PaleGreen">
+            <DockPanel x:Name="contenedorSuperheroe" Background="{Binding Path=Heroe, Converter={StaticResource conversorColor}}">
                 <DockPanel LastChildFill="false"
                            DockPanel.Dock="Top">
                     <TextBlock DockPanel.Dock="Left"
-                               Margin="5" Foreground="White" FontWeight="Bold" FontSize="42">
+                               Margin="5" Foreground="White" FontWeight="Bold" FontSize="42" Text="{Binding Path=Nombre}">
                         <TextBlock.Effect>
                             <DropShadowEffect />
-                        </TextBlock.Effect>Ironman</TextBlock>
+                        </TextBlock.Effect></TextBlock>
+                    <Image Source="xmen.png"
+                           Visibility="{Binding Path=Xmen, Converter={StaticResource conversorVisibilidad}}"
+                           Style="{StaticResource iconos}" />
                     <Image Source="avengers.png"
-                           DockPanel.Dock="Right"
-                           Height="50"
-                           Margin="5,5,10,5" />
+                           Visibility="{Binding Path=Vengador, Converter={StaticResource conversorVisibilidad}}"
+                           Style="{StaticResource iconos}" />
                 </DockPanel>
                 <StackPanel Orientation="Horizontal"
                             DockPanel.Dock="Bottom"
                             HorizontalAlignment="Center">
-                    <Image Source="arrow.png"
-                           Width="25" />
-                    <TextBlock Margin="5" FontWeight="Bold" FontSize="20"> 1 / 3</TextBlock>
-                    <Image Source="arrow.png"
-                           Width="25"
-                           RenderTransformOrigin="0.5,0.5">
+                    <Image x:Name="anteriorImage"
+                           Style="{StaticResource flecha}"
+                           MouseLeftButtonUp="anteriorImage_MouseLeftButtonUp"/>
+                    <TextBlock x:Name="actualTextBlock"
+                               Margin="5"
+                               FontWeight="Bold"
+                               FontSize="20"
+                               Text="1" />
+                    <TextBlock x:Name="separadorTextBlock"
+                               Margin="5"
+                               FontWeight="Bold"
+                               FontSize="20"
+                               Text="/" />
+                    <TextBlock x:Name="totalTextBlock"
+                               Margin="5"
+                               FontWeight="Bold"
+                               FontSize="20"
+                               Text="3" />
+                    <Image  x:Name="siguiente"
+                            Style="{StaticResource flecha}"
+                            RenderTransformOrigin="0.5,0.5"
+                            MouseLeftButtonUp="siguiente_MouseLeftButtonUp">
                         <Image.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform ScaleY="1"
@@ -99,7 +138,7 @@
                         </Image.RenderTransform>
                     </Image>
                 </StackPanel>
-                <Image Source="https://sm.ign.com/ign_latam/screenshot/default/ybbpqktez5whedr0-1592031889_31aa.jpg" 
+                <Image Source="{Binding Path=Imagen}" 
                        Stretch="UniformToFill" 
                        Margin="10,5,10,10"/>
             </DockPanel>
@@ -109,7 +148,7 @@
             <TabItem.Header>
                 Nuevo superhéroe
             </TabItem.Header>
-            <Grid>
+            <Grid x:Name="contenedorNuevoSuperheroe">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
@@ -124,7 +163,7 @@
                             <TextBlock Text="Nombre del superhéroe" />
                             <Image Style="{StaticResource info}" />
                         </StackPanel>
-                        <TextBox x:Name="nombreTextBox" />
+                        <TextBox x:Name="nombreTextBox" Text="{Binding Path=Nombre}" />
                     </StackPanel>
 
                     <StackPanel Orientation="Vertical"
@@ -134,7 +173,7 @@
                             <TextBlock Text="Imagen" />
                             <Image Style="{StaticResource info}" />
                         </StackPanel>
-                        <TextBox x:Name="rutaImagenTextBox" />
+                        <TextBox x:Name="rutaImagenTextBox" Text="{Binding Path=Imagen}"/>
                     </StackPanel>
 
                     <Grid>
@@ -149,26 +188,26 @@
                                         Margin="10">
                                 <RadioButton x:Name="heroeRadioButton"
                                              Content="Héroe"
-                                             IsChecked="True" 
-                                             Margin="0,0,0,5"
-                                             Checked="RadioButton_Checked"
-                                             Tag="heroe"/>
+                                             IsChecked="{Binding Path=Heroe}"
+                                             Margin="0,0,0,5"/>
                                 <RadioButton x:Name="villanoRadioButton"
                                              Content="Villano"
-                                             Checked="RadioButton_Checked"
-                                             Tag="villano"/>
+                                             IsChecked="{Binding Path=Villano}"/>
                             </StackPanel>
                         </Border>
                         <Border Style="{StaticResource bordeGrupos}"
                                 Margin="5,10,10,10"
                                 Grid.Column="1">
                             <StackPanel Orientation="Vertical"
-                                        Margin="10">
+                                        Margin="10"
+                                        IsEnabled="{Binding ElementName=heroeRadioButton, Path=IsChecked}">
                                 <CheckBox x:Name="vengadoresCheckBox"
                                           Content="Vengadores"
-                                          Margin="0,0,0,3"/>
+                                          Margin="0,0,0,3"
+                                          IsChecked="{Binding Path=Vengador}"/>
                                 <CheckBox x:Name="xmenCheckBox"
-                                          Content="X-men" />
+                                          Content="X-men"
+                                          IsChecked="{Binding Path=Xmen}" />
                             </StackPanel>
                         </Border>
                     </Grid>
